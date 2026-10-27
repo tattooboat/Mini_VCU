@@ -37,8 +37,12 @@
 #include "Int_motor.h"
 #include "Int_Encoder.h"
 #include "App_MotorCan.h"
+#include "App_MotorFeedback.h"
 #include <App_Fault.h>
-#include "lcd_ili9341.h"
+#include "App_lcd_ui.h"
+#include "Int_can.h"
+#include "Int_XPT2046.h"
+#include "App_Touch.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,8 +63,20 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-osMessageQueueId_t SensorDataQueueHandle;/* 传感器数杮队列坥�? */
+osMessageQueueId_t SensorDataQueueHandle;/* ?????????? */
+/* ?? Int_can.c ???????????? */
+extern volatile uint32_t g_can_last_id;
+extern volatile uint8_t g_can_last_dlc;
+extern volatile uint8_t g_can_last_data[8];
+extern volatile uint32_t g_can_rx_count;
 
+extern volatile uint16_t g_touch_raw_x;
+extern volatile uint16_t g_touch_raw_y;
+
+volatile uint8_t g_touch_pressed = 0;
+
+volatile uint16_t g_touch_screen_x = 0;
+volatile uint16_t g_touch_screen_y = 0;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -72,23 +88,24 @@ const osThreadAttr_t defaultTask_attributes = {
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-// LED 任务
+// LED ??
 void LED_Task(void *argument);
-// Debug 任务
+// Debug ??
 void Debug_Task(void *argument);
-// Sensor 任务
+// Sensor ??
 void Sensor_Task(void *argument);
-// PWM 任务（已坜用�?
+// PWM ????????
 // void PWM_Test_Task(void *argument);
-// CAN 电机控制任务
+// CAN ??????
 void App_MotorCan_ControlTask(void *argument);
+
+void LCD_Test_Task(void *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
-void LCD_Test_Task(void *argument);
 /**
   * @brief  FreeRTOS initialization
   * @param  None
@@ -99,16 +116,16 @@ void MX_FREERTOS_Init(void) {
 
   const osMessageQueueAttr_t SensorDataQueue_attributes = {
     .name = "SensorDataQueue"
-  };// 传感器数杮队列属�?
+  };// ??????????
 
   SensorDataQueueHandle = osMessageQueueNew(
       8,
       sizeof(SensorData_t),
       &SensorDataQueue_attributes
-  );// 创建传感器数杮队�?
+  );// ??????????
   if (SensorDataQueueHandle == NULL)
   {
-      /* 队列创建失败，坯在此设置错误标志 */
+      /* ???????????????? */
   }
 
   const osThreadAttr_t sensorTask_attributes = {
@@ -130,7 +147,7 @@ void MX_FREERTOS_Init(void) {
       .priority = (osPriority_t)osPriorityNormal
   };
 
-  /* PWM_Test_Task 已坜用，电机控制统一�? Motor_CAN_Control_Task 负责 */
+  /* PWM_Test_Task ???????????? Motor_CAN_Control_Task ?? */
   const osThreadAttr_t motorCanTask_attributes = {
         .name = "Motor_CAN",
         .stack_size = 1024 * 4,
@@ -223,9 +240,9 @@ void Debug_Task(void *argument)
     for (;;)
     {
         /*
-         * 等待传感器数杮�??
-         * osWaitForever 表示没有数杮时阻塞等待，
-         * 而丝是坝夝空转坠�? CPU�?
+         * ??????????
+         * osWaitForever ????????????
+         * ?????????? CPU??
          */
         if (osMessageQueueGet(
                 SensorDataQueueHandle,
@@ -278,20 +295,20 @@ static uint8_t ADC_ReadRaw(uint32_t *value)
         return 1U;
     }
 
-    /* 坯动�?�? ADC 转杢 */
+    /* ?????? ADC ?? */
     if (HAL_ADC_Start(&hadc1) != HAL_OK)
     {
         return 2U;
     }
 
-    /* 等待转杢完戝，最多等�? 100 ms */
+    /* ???????????? 100 ms */
     if (HAL_ADC_PollForConversion(&hadc1, 100) != HAL_OK)
     {
         HAL_ADC_Stop(&hadc1);
         return 3U;
     }
 
-    /* 读坖 12 �? ADC 原始�? */
+    /* ?? 12 ?? ADC ???? */
     *value = HAL_ADC_GetValue(&hadc1);
 
     HAL_ADC_Stop(&hadc1);
@@ -314,14 +331,14 @@ void Sensor_Task(void *argument)
         data.humidity = 0.0f;
         data.aht20_valid = 0U;
 
-        /* 读坖 PA0 对应�? ADC 通靓 */
+        /* ?? PA0 ???? ADC ?? */
         if (ADC_ReadRaw(&data.adc_raw) == 0U)
         {
             data.adc_voltage =
                 (float)data.adc_raw * 3.3f / 4095.0f;
         }
 
-        /* 读坖 AHT20 */
+        /* ?? AHT20 */
         if (AHT20_ReadData(&aht) == AHT20_OK)
         {
             data.temperature = aht.temperature;
@@ -330,14 +347,14 @@ void Sensor_Task(void *argument)
         }
 
         /*
-         * 这里使用 HAL_GetTick() 作为时间标记�?
-         * 坎续如果增加多个时间溝，�?覝统�?时间基准�?
+         * ???? HAL_GetTick() ????????
+         * ????????????????????????
          */
         data.timestamp_ms = HAL_GetTick();
 
         /*
-         * 队列满时�?多等�? 10 ms�?
-         * 如果仝无法写入，就丢弃本次数杮并继续下一轮�??
+         * ?????????? 10 ms??
+         * ????????????????????????
          */
         (void)osMessageQueuePut(
             SensorDataQueueHandle,
@@ -350,18 +367,18 @@ void Sensor_Task(void *argument)
     }
 }
 
-/* PID 坂数定义 */
+/* PID ???? */
 #define MOTOR_MAX_RPM       169.0f
 
-/* 当剝 Motor_CAN 使用本文件内�? PI；App_SpeedPID.c 尚未接入，阶段三统一�? */
-/* 速度环增益与陝幅 */
+/* ?? Motor_CAN ???????? PI?App_SpeedPID.c ???????????? */
+/* ???????? */
 #define SPEED_PID_KP        10.0f
 #define SPEED_PID_KI        1.0f
 
 #define SPEED_PID_I_LIMIT   400.0f
 #define SPEED_PID_PWM_MAX   1000.0f
 #define SPEED_PID_DT        0.05f
-/* �? CAN 指令映射�? RPM，并�? PI 输出 PWM */
+/* ?? CAN ?????? RPM???? PI ?? PWM */
 void App_MotorCan_ControlTask(void *argument)
 {
     int16_t current_pwm = 0;
@@ -370,6 +387,8 @@ void App_MotorCan_ControlTask(void *argument)
     uint32_t last_rx_tick;
     uint32_t print_cnt = 0;
     uint32_t last_loop_tick;
+
+    uint8_t can_timeout_reported = 0U;
 
     float target_rpm = 0.0f;
     float previous_target_rpm = 0.0f;
@@ -393,13 +412,13 @@ void App_MotorCan_ControlTask(void *argument)
     {
         uint32_t now = HAL_GetTick();
 
-        /* 计算本次控制周期 */
+        /* ???????? */
         uint32_t elapsed_ms = (uint32_t)(now - last_loop_tick);
         last_loop_tick = now;
 
         dt = (float)elapsed_ms / 1000.0f;
 
-        /* 异常 dt 回�??到固定周�? */
+        /* ?? dt ?????????? */
         if (dt < 0.01f || dt > 0.20f)
         {
             dt = SPEED_PID_DT;
@@ -407,7 +426,7 @@ void App_MotorCan_ControlTask(void *argument)
 
         last_rx_tick = App_MotorCan_GetLastRxTick();
 
-        /* CAN 超时�?�? */
+        /* CAN ?????? */
         if (last_rx_tick == 0U ||
             (uint32_t)(now - last_rx_tick) > 500U)
         {
@@ -415,22 +434,38 @@ void App_MotorCan_ControlTask(void *argument)
             target_rpm = 0.0f;
 
             App_Fault_Set(FAULT_CAN_TIMEOUT);
+
+            /* ??????????????????????????? */
+            if (can_timeout_reported == 0U)
+            {
+                can_timeout_reported = 1U;
+
+                (void)App_MotorFeedback_Send(
+                    MOTOR_STATE_FAULT,
+                    0,
+                    0U,
+                    0U,
+                    MOTOR_FAULT_CAN_TIMEOUT
+                );
+            }
         }
         else
         {
+            can_timeout_reported = 0U;
+
             can_speed = App_MotorCan_GetTargetSpeed();
 
             App_Fault_Clear(FAULT_CAN_TIMEOUT);
 
-            /* CAN 指令映射为目�? RPM */
+            /* CAN ???????? RPM */
             target_rpm =
                 ((float)can_speed / 1000.0f) * MOTOR_MAX_RPM;
         }
 
-        /* 读坖编砝器实际输出轴 RPM */
+        /* ?????????? RPM */
         actual_rpm = Int_Encoder_GetOutputRPM(dt);
 
-        /* 目标大幅坘化时針置积分，靿兝旧积分拖慢哝�? */
+        /* ?????????????????????? */
         if (fabsf(target_rpm - previous_target_rpm) > 5.0f)
         {
             integral = 0.0f;
@@ -439,8 +474,8 @@ void App_MotorCan_ControlTask(void *argument)
         previous_target_rpm = target_rpm;
 
         /*
-         * 目标�? 0 时坜止电机�??
-         * 坌时清除积分和误差，靿兝下次坯动带着旧积分�??
+         * ???? 0 ????????
+         * ????????????????????????
          */
         if (target_rpm == 0.0f)
         {
@@ -455,7 +490,7 @@ void App_MotorCan_ControlTask(void *argument)
         {
             error = target_rpm - actual_rpm;
 
-            /* PI 计算 */
+            /* PI ?? */
             integral += error * dt;
 
             if (integral > SPEED_PID_I_LIMIT)
@@ -470,7 +505,7 @@ void App_MotorCan_ControlTask(void *argument)
             output = SPEED_PID_KP * error
                    + SPEED_PID_KI * integral;
 
-            /* PWM 陝幅 */
+            /* PWM ?? */
             if (output > SPEED_PID_PWM_MAX)
             {
                 output = SPEED_PID_PWM_MAX;
@@ -485,7 +520,7 @@ void App_MotorCan_ControlTask(void *argument)
             Int_Motor_SetSpeed(current_pwm);
         }
 
-        /* �? 10 次循环打坰一次，�? 500 ms */
+        /* ?? 10 ?????????? 500 ms */
         if ((print_cnt++ % 10U) == 0U)
         {
             int n = snprintf(
@@ -514,23 +549,106 @@ void App_MotorCan_ControlTask(void *argument)
         osDelay(50);
     }
 }
+ 
 
 void LCD_Test_Task(void *argument)
 {
+    uint32_t can_id = 0U;
+    uint32_t rx_count = 0U;
+    uint32_t last_rx_count = 0U;
+    uint32_t last_rx_tick = 0U;
+    uint32_t now;
+
+    uint8_t dlc = 0U;
+    uint8_t data[8] = {0};
+    uint8_t can_online = 0U;
+    uint8_t i;
+
+    (void)argument;
+
+    /* ??????? */
+    LCD_UI_ShowHomePage();
+
     for (;;)
     {
-        LCD_FillColor(LCD_RED);
-        osDelay(1000);
+        /*
+         * 1. ???????
+         * ?????????????????? CAN ??
+         */
+        rx_count = g_can_rx_count;
 
-        LCD_FillColor(LCD_GREEN);
-        osDelay(1000);
+        now = HAL_GetTick();
 
-        LCD_FillColor(LCD_BLUE);
-        osDelay(1000);
+        if (rx_count != last_rx_count)
+        {
+            last_rx_count = rx_count;
+            last_rx_tick = now;
+        }
 
-        LCD_FillColor(LCD_WHITE);
-        osDelay(1000);
+        /*
+         * 2. ??????? ID?DLC ????
+         */
+        can_id = g_can_last_id;
+        dlc = g_can_last_dlc;
+
+        if (dlc > 8U)
+        {
+            dlc = 8U;
+        }
+
+        for (i = 0U; i < 8U; i++)
+        {
+            data[i] = g_can_last_data[i];
+        }
+
+        /*
+         * 3. 500 ms ???? CAN ????????
+         * ?????????????
+         */
+        now = HAL_GetTick();
+
+        if ((rx_count > 0U) &&
+            ((uint32_t)(now - last_rx_tick) <= 500U))
+        {
+            can_online = 1U;
+        }
+        else
+        {
+            can_online = 0U;
+        }
+
+        /*
+         * 4. ?? LCD ? CAN ?????
+         */
+        LCD_UI_UpdateCAN(can_id,
+                         dlc,
+                         data,
+                         rx_count,
+                         can_online);
+        LCD_UI_UpdateMotor(can_id, dlc, data);
+        LCD_UI_UpdateFault(g_fault_flags);
+        osDelay(200);
+
+        g_touch_pressed = Int_XPT2046_IsPressed();
+
+        if (Int_XPT2046_IsPressed())
+        {
+            Int_XPT2046_ReadRaw(
+                (uint16_t *)&g_touch_raw_x,
+                (uint16_t *)&g_touch_raw_y
+            );
+
+            App_Touch_Map(
+                g_touch_raw_x,
+                g_touch_raw_y,
+                (uint16_t *)&g_touch_screen_x,
+                (uint16_t *)&g_touch_screen_y
+            );
+        }
+
+        osDelay(20);
     }
 }
+
 /* USER CODE END Application */
 

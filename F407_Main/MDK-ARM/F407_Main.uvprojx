@@ -81,7 +81,7 @@
           </BeforeMake>
           <AfterMake>
             <RunUserProg1>0</RunUserProg1>
-            <RunUserProg2>0</RunUserProg2>
+            <RunUserProg2>1</RunUserProg2>
             <UserProg1Name></UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;./Interface;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;./Application;.\USER</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;./Interface;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;./Application;./USER</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1337,6 +1337,16 @@
               <FileType>5</FileType>
               <FilePath>.\Interface\Int_lcd.h</FilePath>
             </File>
+            <File>
+              <FileName>Int_XPT2046.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Interface\Int_XPT2046.c</FilePath>
+            </File>
+            <File>
+              <FileName>Int_XPT2046.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Interface\Int_XPT2046.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2046,6 +2056,26 @@
               <FileType>5</FileType>
               <FilePath>.\Application\App_ECU_UI.h</FilePath>
             </File>
+            <File>
+              <FileName>App_MotorFeedback.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Application\App_MotorFeedback.c</FilePath>
+            </File>
+            <File>
+              <FileName>App_MotorFeedback.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Application\App_MotorFeedback.h</FilePath>
+            </File>
+            <File>
+              <FileName>App_Touch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Application\App_Touch.c</FilePath>
+            </File>
+            <File>
+              <FileName>App_Touch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Application\App_Touch.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2060,6 +2090,21 @@
               <FileName>lcd_ili9341.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\USER\lcd_ili9341.h</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_font.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\USER\lcd_font.h</FilePath>
+            </File>
+            <File>
+              <FileName>App_lcd_ui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Application\App_lcd_ui.c</FilePath>
+            </File>
+            <File>
+              <FileName>App_lcd_ui.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Application\App_lcd_ui.h</FilePath>
             </File>
           </Files>
         </Group>

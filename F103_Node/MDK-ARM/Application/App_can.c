@@ -1,5 +1,6 @@
 #include "app_can.h"
-#include <Int_can.h>
+#include "Int_can.h"
+#include <string.h>
 
 /* 计算前 7 字节的 8 位累加和 */
 uint8_t APP_CAN_Checksum(const uint8_t *data)
@@ -78,6 +79,8 @@ void APP_CAN_Init(void)
     /* 暂无额外初始化 */
 }
 
+static APP_CAN_MotorFeedback_t motor_feedback = {0};
+
 void APP_CAN_Process(void)
 {
     INT_CAN_Frame_t frame;
@@ -88,6 +91,39 @@ void APP_CAN_Process(void)
     /* 没有新帧就直接返回 */
     if (INT_CAN_GetLastFrame(&frame) == 0U)
     {
+        return;
+    }
+
+    /* 先处理 F407 发回来的电机状态帧 */
+    if (frame.id == APP_CAN_ID_MOTOR_FEEDBACK)
+    {
+        int16_t target;
+
+        if (frame.dlc != 8U ||
+            frame.is_extended != 0U ||
+            frame.is_remote != 0U ||
+            frame.data[0] != 0xA5U)
+        {
+            return;
+        }
+
+        target = (int16_t)(
+            ((uint16_t)frame.data[2] << 8) |
+            (uint16_t)frame.data[3]
+        );
+
+        __disable_irq();
+
+        motor_feedback.online = 1U;
+        motor_feedback.state = frame.data[1];
+        motor_feedback.target = target;
+        motor_feedback.last_cmd = frame.data[4];
+        motor_feedback.seq = frame.data[5];
+        motor_feedback.fault_code = frame.data[6];
+        motor_feedback.rx_count++;
+
+        __enable_irq();
+
         return;
     }
 
@@ -155,4 +191,18 @@ void APP_CAN_Process(void)
         APP_CAN_ID_REPLY,
         reply_data,
         APP_CAN_FRAME_LEN);
+}
+
+
+void APP_CAN_GetMotorFeedback(
+    APP_CAN_MotorFeedback_t *feedback)
+{
+    if (feedback == NULL)
+    {
+        return;
+    }
+
+    __disable_irq();
+    *feedback = motor_feedback;
+    __enable_irq();
 }

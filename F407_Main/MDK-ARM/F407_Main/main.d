@@ -60,4 +60,6 @@
 .\f407_main\main.o: ./Interface/Int_can.h
 .\f407_main\main.o: ./Application/App_can_protocol.h
 .\f407_main\main.o: ./Interface/Int_motor.h
-.\f407_main\main.o: .\USER\lcd_ili9341.h
+.\f407_main\main.o: ./USER/lcd_ili9341.h
+.\f407_main\main.o: ./USER/lcd_font.h
+.\f407_main\main.o: ./Interface/Int_XPT2046.h

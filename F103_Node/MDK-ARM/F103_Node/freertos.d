@@ -38,3 +38,6 @@
 .\f103_node\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
 .\f103_node\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
 .\f103_node\freertos.o: ./Application/App_MotorCan.h
+.\f103_node\freertos.o: ./Interface/Int_can.h
+.\f103_node\freertos.o: ./Application/App_can.h
+.\f103_node\freertos.o: ./Application/App_MotorFeedbackRx.h

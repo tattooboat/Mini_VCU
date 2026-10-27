@@ -26,7 +26,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "App_MotorCan.h"
-
+#include "Int_can.h"
+#include "App_can.h"
+#include "App_MotorFeedbackRx.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,12 +49,20 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
+/* 电机反馈调试数据：脱机时可在 Keil Watch 窗口查看 */
+MotorFeedbackRx_t motor_feedback_debug = {0};
+
 /* Definitions for CAN_Motor_TestTask */
 osThreadId_t CAN_Motor_TestTaskHandle;
 const osThreadAttr_t CAN_Motor_TestTask_attributes = {
   .name = "CAN_Motor_TestTask",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
+};
+const osThreadAttr_t CAN_Protocol_Task_attributes = {
+    .name = "CAN_Protocol_Task",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityAboveNormal
 };
 
 /* USER CODE END Variables */
@@ -68,6 +78,7 @@ const osThreadAttr_t defaultTask_attributes = {
 /* USER CODE BEGIN FunctionPrototypes */
 
 void CAN_Motor_Test_Task(void *argument);
+void CAN_Protocol_Task(void *argument);
 
 /* USER CODE END FunctionPrototypes */
 
@@ -108,6 +119,10 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* creation of CAN_Motor_TestTask */
   CAN_Motor_TestTaskHandle = osThreadNew(CAN_Motor_Test_Task, NULL, &CAN_Motor_TestTask_attributes);
+  
+  osThreadNew(CAN_Protocol_Task,
+            NULL,
+            &CAN_Protocol_Task_attributes);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -136,6 +151,22 @@ void StartDefaultTask(void *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+
+/* 周期打印电机反馈帧（自带 500ms 节流） */
+static void MotorFeedback_DebugPrint(void)
+{
+    static uint32_t last_print_tick = 0U;
+
+    if ((HAL_GetTick() - last_print_tick) < 500U)
+    {
+        return;
+    }
+
+    last_print_tick = HAL_GetTick();
+
+    App_MotorFeedbackRx_Get(&motor_feedback_debug);
+}
+
 /**
   * @brief  Function implementing the CAN motor test thread.
   * @param  argument: Not used
@@ -194,9 +225,21 @@ void CAN_Motor_Test_Task(void *argument)
         else
           App_MotorCan_SendSpeed(cmd_seq[i]);
         osDelay(period_ms);
+
+        MotorFeedback_DebugPrint();
       }
     }
   }
 }
 
+void CAN_Protocol_Task(void *argument)
+{
+    (void)argument;
+
+    for (;;)
+    {
+        APP_CAN_Process();
+        osDelay(2);
+    }
+}
 /* USER CODE END Application */

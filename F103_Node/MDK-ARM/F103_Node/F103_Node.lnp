@@ -23,6 +23,7 @@
 ".\f103_node\system_stm32f1xx.o"
 ".\f103_node\app_can.o"
 ".\f103_node\app_motorcan.o"
+".\f103_node\app_motorfeedbackrx.o"
 ".\f103_node\int_can.o"
 ".\f103_node\croutine.o"
 ".\f103_node\event_groups.o"

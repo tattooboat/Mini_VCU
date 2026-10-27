@@ -1,5 +1,6 @@
 #include "Int_can.h"
 #include "can.h"
+#include "App_MotorFeedbackRx.h"
 #include <string.h>
 
 extern CAN_HandleTypeDef hcan;
@@ -141,5 +142,16 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan_ptr)
 
         INT_can_rx_count++;
         can_frame_pending = 1U;
+
+        /* 把 F407 的电机反馈帧交给反馈处理模块（仅轻量赋值） */
+        if ((rx_header.IDE == CAN_ID_STD) &&
+            (rx_header.RTR == CAN_RTR_DATA))
+        {
+            App_MotorFeedbackRx_Process(
+                rx_header.StdId,
+                rx_data,
+                rx_header.DLC
+            );
+        }
     }
 }

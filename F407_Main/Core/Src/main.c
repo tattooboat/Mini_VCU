@@ -34,7 +34,7 @@
 #include "Int_can.h"
 #include "Int_motor.h"
 #include "lcd_ili9341.h"
-
+#include "Int_XPT2046.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,6 +74,8 @@ volatile uint32_t f407_rx_count = 0;
 volatile uint32_t f407_last_id = 0;
 volatile uint8_t  f407_last_dlc = 0;
 volatile uint8_t  f407_last_data[8] = {0};
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -126,6 +128,7 @@ int main(void)
   MX_CAN1_Init();
   MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
+  Int_XPT2046_Init();
   LCD_Init();
   
   if (INT_CAN_Start() != HAL_OK)
@@ -183,6 +186,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    
   }
   /* USER CODE END 3 */
 }

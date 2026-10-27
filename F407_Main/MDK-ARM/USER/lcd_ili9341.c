@@ -153,3 +153,299 @@ void LCD_FillColor(uint16_t color)
 
     HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
 }
+
+
+/**
+ * @brief  在指定坐标绘制一个像素点
+ */
+void LCD_DrawPoint(uint16_t x, uint16_t y, uint16_t color)
+{
+    uint8_t high;
+    uint8_t low;
+
+    if (x >= LCD_WIDTH || y >= LCD_HEIGHT)
+    {
+        return;
+    }
+
+    high = (uint8_t)(color >> 8);
+    low  = (uint8_t)(color & 0xFF);
+
+    LCD_SetWindow(x, y, x, y);
+
+    HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);
+
+    LCD_WriteByte(high);
+    LCD_WriteByte(low);
+
+    HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+}
+
+
+/**
+ * @brief  填充矩形区域
+ * @note   x、y 为左上角坐标，width、height 为宽高
+ */
+void LCD_FillRect(uint16_t x, uint16_t y,
+                  uint16_t width, uint16_t height,
+                  uint16_t color)
+{
+    uint32_t total;
+    uint8_t high;
+    uint8_t low;
+    uint32_t x_end;
+    uint32_t y_end;
+
+    if (width == 0 || height == 0)
+    {
+        return;
+    }
+
+    if (x >= LCD_WIDTH || y >= LCD_HEIGHT)
+    {
+        return;
+    }
+
+    /* 防止矩形超出屏幕边界 */
+    x_end = (uint32_t)x + width;
+    y_end = (uint32_t)y + height;
+
+    if (x_end > LCD_WIDTH)
+    {
+        x_end = LCD_WIDTH;
+    }
+
+    if (y_end > LCD_HEIGHT)
+    {
+        y_end = LCD_HEIGHT;
+    }
+
+    width  = (uint16_t)(x_end - x);
+    height = (uint16_t)(y_end - y);
+
+    total = (uint32_t)width * height;
+
+    high = (uint8_t)(color >> 8);
+    low  = (uint8_t)(color & 0xFF);
+
+    LCD_SetWindow(x, y,
+                  (uint16_t)(x_end - 1),
+                  (uint16_t)(y_end - 1));
+
+    HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);
+
+    while (total--)
+    {
+        LCD_WriteByte(high);
+        LCD_WriteByte(low);
+    }
+
+    HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+}
+
+
+/**
+ * @brief  绘制矩形边框
+ */
+void LCD_DrawRect(uint16_t x, uint16_t y,
+                  uint16_t width, uint16_t height,
+                  uint16_t color)
+{
+    if (width == 0 || height == 0)
+    {
+        return;
+    }
+
+    LCD_FillRect(x, y, width, 1, color);
+
+    if (height > 1)
+    {
+        LCD_FillRect(x, (uint16_t)(y + height - 1),
+                     width, 1, color);
+    }
+
+    if (height > 2)
+    {
+        LCD_FillRect(x, (uint16_t)(y + 1),
+                     1, (uint16_t)(height - 2), color);
+
+        if (width > 1)
+        {
+            LCD_FillRect((uint16_t)(x + width - 1),
+                         (uint16_t)(y + 1),
+                         1, (uint16_t)(height - 2), color);
+        }
+    }
+}
+
+
+/* 查找字符对应的点阵数据 */
+static const uint8_t *LCD_GetCharBitmap(char ch)
+{
+    uint32_t i;
+    uint32_t count;
+
+    count = sizeof(LCD_FontTable) / sizeof(LCD_FontTable[0]);
+
+    /* 小写字母暂时转换为大写字母 */
+    if (ch >= 'a' && ch <= 'z')
+    {
+        ch = (char)(ch - 'a' + 'A');
+    }
+
+    for (i = 0; i < count; i++)
+    {
+        if (LCD_FontTable[i].ch == ch)
+        {
+            return LCD_FontTable[i].col;
+        }
+    }
+
+    /* 未收录的字符使用问号 */
+    for (i = 0; i < count; i++)
+    {
+        if (LCD_FontTable[i].ch == '?')
+        {
+            return LCD_FontTable[i].col;
+        }
+    }
+
+    return LCD_FontTable[0].col;
+}
+
+/* 绘制单个 ASCII 字符：5x7 点阵 */
+void LCD_DrawChar(uint16_t x, uint16_t y,
+                  char ch,
+                  uint16_t color,
+                  uint16_t bg_color)
+{
+    const uint8_t *bitmap;
+    uint16_t row;
+    uint16_t col;
+
+    if (x >= LCD_WIDTH || y >= LCD_HEIGHT)
+    {
+        return;
+    }
+
+    bitmap = LCD_GetCharBitmap(ch);
+
+    for (row = 0; row < LCD_FONT_HEIGHT; row++)
+    {
+        for (col = 0; col < LCD_FONT_WIDTH; col++)
+        {
+            if (x + col >= LCD_WIDTH ||
+                y + row >= LCD_HEIGHT)
+            {
+                continue;
+            }
+
+            if (bitmap[col] & (1U << row))
+            {
+                LCD_DrawPoint(x + col, y + row, color);
+            }
+            else
+            {
+                LCD_DrawPoint(x + col, y + row, bg_color);
+            }
+        }
+    }
+}
+
+/* 绘制字符串，字符间距 1 像素 */
+void LCD_ShowString(uint16_t x, uint16_t y,
+                    const char *str,
+                    uint16_t color,
+                    uint16_t bg_color)
+{
+    uint32_t cursor_x;
+
+    if (str == NULL)
+    {
+        return;
+    }
+
+    cursor_x = x;
+
+    while (*str != '\0')
+    {
+        if (cursor_x + LCD_FONT_WIDTH > LCD_WIDTH)
+        {
+            break;
+        }
+
+        LCD_DrawChar((uint16_t)cursor_x, y,
+                     *str, color, bg_color);
+
+        cursor_x += LCD_FONT_WIDTH + LCD_FONT_SPACING;
+        str++;
+    }
+}
+
+void LCD_ShowStringScale(uint16_t x, uint16_t y,
+                         const char *str,
+                         uint16_t color,
+                         uint16_t bg_color,
+                         uint8_t scale)
+{
+    uint32_t cursor_x;
+    uint16_t row, col;
+    uint8_t dx, dy;
+    const uint8_t *bitmap;
+
+    if (str == NULL || scale == 0)
+    {
+        return;
+    }
+
+    cursor_x = x;
+
+    while (*str != '\0')
+    {
+        if (cursor_x >= LCD_WIDTH ||
+            y >= LCD_HEIGHT)
+        {
+            break;
+        }
+
+        bitmap = LCD_GetCharBitmap(*str);
+
+        for (col = 0; col < LCD_FONT_WIDTH; col++)
+        {
+            for (row = 0; row < LCD_FONT_HEIGHT; row++)
+            {
+                uint16_t pixel_color;
+
+                pixel_color =
+                    (bitmap[col] & (1U << row))
+                    ? color : bg_color;
+
+                for (dx = 0; dx < scale; dx++)
+                {
+                    for (dy = 0; dy < scale; dy++)
+                    {
+                        uint32_t px = cursor_x
+                                    + col * scale + dx;
+                        uint32_t py = (uint32_t)y
+                                    + row * scale + dy;
+
+                        if (px < LCD_WIDTH && py < LCD_HEIGHT)
+                        {
+                            LCD_DrawPoint((uint16_t)px,
+                                          (uint16_t)py,
+                                          pixel_color);
+                        }
+                    }
+                }
+            }
+        }
+
+        cursor_x += (LCD_FONT_WIDTH + LCD_FONT_SPACING)
+                    * scale;
+
+        str++;
+    }
+}
+

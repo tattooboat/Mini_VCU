@@ -28,3 +28,4 @@
 .\f103_node\app_can.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
 .\f103_node\app_can.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 .\f103_node\app_can.o: ./Interface/Int_can.h
+.\f103_node\app_can.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\string.h

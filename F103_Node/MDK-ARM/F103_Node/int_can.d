@@ -28,4 +28,5 @@
 .\f103_node\int_can.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
 .\f103_node\int_can.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 .\f103_node\int_can.o: ../Core/Inc/can.h
+.\f103_node\int_can.o: ./Application/App_MotorFeedbackRx.h
 .\f103_node\int_can.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\string.h

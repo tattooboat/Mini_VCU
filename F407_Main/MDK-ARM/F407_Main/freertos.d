@@ -59,5 +59,10 @@
 .\f407_main\freertos.o: ./Interface/Int_motor.h
 .\f407_main\freertos.o: ./Interface/Int_Encoder.h
 .\f407_main\freertos.o: ./Application/App_MotorCan.h
+.\f407_main\freertos.o: ./Application/App_MotorFeedback.h
 .\f407_main\freertos.o: ./Application/App_Fault.h
-.\f407_main\freertos.o: .\USER\lcd_ili9341.h
+.\f407_main\freertos.o: ./Application/App_lcd_ui.h
+.\f407_main\freertos.o: ./Interface/Int_can.h
+.\f407_main\freertos.o: ./Application/App_can_protocol.h
+.\f407_main\freertos.o: ./Interface/Int_XPT2046.h
+.\f407_main\freertos.o: ./Application/App_Touch.h

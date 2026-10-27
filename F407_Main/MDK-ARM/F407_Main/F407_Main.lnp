@@ -43,6 +43,7 @@
 ".\f407_main\int_touch.o"
 ".\f407_main\int_display_port.o"
 ".\f407_main\int_lcd.o"
+".\f407_main\int_xpt2046.o"
 ".\f407_main\croutine.o"
 ".\f407_main\event_groups.o"
 ".\f407_main\list.o"
@@ -60,7 +61,10 @@
 ".\f407_main\app_fault.o"
 ".\f407_main\app_speedpid.o"
 ".\f407_main\app_ecu_ui.o"
+".\f407_main\app_motorfeedback.o"
+".\f407_main\app_touch.o"
 ".\f407_main\lcd_ili9341.o"
+".\f407_main\app_lcd_ui.o"
 --library_type=microlib --strict --scatter ".\F407_Main\F407_Main.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

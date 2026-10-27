@@ -27,6 +27,7 @@
 #include <string.h>
 #include "Int_can.h"
 #include "App_can.h"
+#include "App_MotorFeedbackRx.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -100,6 +101,7 @@ int main(void)
   }
 
   APP_CAN_Init();
+  App_MotorFeedbackRx_Init();
   /* USER CODE END 2 */
 
   /* Init scheduler */

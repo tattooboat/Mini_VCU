@@ -1,7 +1,7 @@
 Dependencies for Project 'F103_Node', Target 'F103_Node': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
 F (startup_stm32f103xb.s)(0x6AD2325C)(--cpu Cortex-M3 -g --apcs=interwork --pd "__MICROLIB SETA 1" -I ../Core/Inc-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include--pd "__UVISION_VERSION SETA 537" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32f103xb.lst --xref -o .\f103_node\startup_stm32f103xb.o --depend .\f103_node\startup_stm32f103xb.d)
-F (../Core/Src/main.c)(0x6AD230C5)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\main.o --omf_browse .\f103_node\main.crf --depend .\f103_node\main.d)
+F (../Core/Src/main.c)(0x6ADF70D3)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\main.o --omf_browse .\f103_node\main.crf --depend .\f103_node\main.d)
 I (../Core/Inc/main.h)(0x6ACCD403)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x69CB8260)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6ACCD5B6)
@@ -43,7 +43,8 @@ I (../Core/Inc/can.h)(0x6ACCD5B6)
 I (../Core/Inc/gpio.h)(0x6ACCD402)
 I (E:\develope\Keil5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (./Interface/Int_can.h)(0x6ACE5F52)
-I (./Application/App_can.h)(0x6ACE5BBE)
+I (./Application/App_can.h)(0x6ADF6B93)
+I (./Application/App_MotorFeedbackRx.h)(0x6ADF6FC1)
 F (../Core/Src/gpio.c)(0x6ACCD5B6)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\gpio.o --omf_browse .\f103_node\gpio.crf --depend .\f103_node\gpio.d)
 I (../Core/Inc/gpio.h)(0x6ACCD402)
 I (../Core/Inc/main.h)(0x6ACCD403)
@@ -72,7 +73,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69CB8260)
-F (../Core/Src/freertos.c)(0x6AD62F7B)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\freertos.o --omf_browse .\f103_node\freertos.crf --depend .\f103_node\freertos.d)
+F (../Core/Src/freertos.c)(0x6ADF7719)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\freertos.o --omf_browse .\f103_node\freertos.crf --depend .\f103_node\freertos.d)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x69CB8262)
 I (E:\develope\Keil5\Core\ARM\ARMCC\include\stddef.h)(0x6025237E)
 I (E:\develope\Keil5\Core\ARM\ARMCC\include\stdint.h)(0x6025237E)
@@ -111,6 +112,9 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69CB8260)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h)(0x69CB8262)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x69CB8262)
 I (./Application/App_MotorCan.h)(0x6AD4C3D0)
+I (./Interface/Int_can.h)(0x6ACE5F52)
+I (./Application/App_can.h)(0x6ADF6B93)
+I (./Application/App_MotorFeedbackRx.h)(0x6ADF6FC1)
 F (../Core/Src/can.c)(0x6AD229C9)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\can.o --omf_browse .\f103_node\can.crf --depend .\f103_node\can.d)
 I (../Core/Inc/can.h)(0x6ACCD5B6)
 I (../Core/Inc/main.h)(0x6ACCD403)
@@ -593,8 +597,8 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69CB8260)
-F (.\Application\App_can.c)(0x6ACE5FAE)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\app_can.o --omf_browse .\f103_node\app_can.crf --depend .\f103_node\app_can.d)
-I (Application\app_can.h)(0x6ACE5BBE)
+F (.\Application\App_can.c)(0x6ADF6C59)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\app_can.o --omf_browse .\f103_node\app_can.crf --depend .\f103_node\app_can.d)
+I (Application\app_can.h)(0x6ADF6B93)
 I (../Core/Inc/main.h)(0x6ACCD403)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x69CB8260)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6ACCD5B6)
@@ -622,7 +626,8 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69CB8260)
 I (./Interface/Int_can.h)(0x6ACE5F52)
-F (.\Application\App_can.h)(0x6ACE5BBE)()
+I (E:\develope\Keil5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
+F (.\Application\App_can.h)(0x6ADF6B93)()
 F (.\Application\App_MotorCan.c)(0x6AD4C3D0)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\app_motorcan.o --omf_browse .\f103_node\app_motorcan.crf --depend .\f103_node\app_motorcan.d)
 I (Application\App_MotorCan.h)(0x6AD4C3D0)
 I (../Core/Inc/main.h)(0x6ACCD403)
@@ -652,7 +657,37 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69CB8260)
 F (.\Application\App_MotorCan.h)(0x6AD4C3D0)()
-F (.\Interface\Int_can.c)(0x6ACE5F52)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\int_can.o --omf_browse .\f103_node\int_can.crf --depend .\f103_node\int_can.d)
+F (.\Application\App_MotorFeedbackRx.c)(0x6ADF6FC1)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\app_motorfeedbackrx.o --omf_browse .\f103_node\app_motorfeedbackrx.crf --depend .\f103_node\app_motorfeedbackrx.d)
+I (Application\App_MotorFeedbackRx.h)(0x6ADF6FC1)
+I (../Core/Inc/main.h)(0x6ACCD403)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x69CB8260)
+I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6ACCD5B6)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h)(0x69CB8260)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h)(0x69CB8260)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h)(0x69CB8260)
+I (../Drivers/CMSIS/Include/core_cm3.h)(0x69CB8245)
+I (E:\develope\Keil5\Core\ARM\ARMCC\include\stdint.h)(0x6025237E)
+I (../Drivers/CMSIS/Include/cmsis_version.h)(0x69CB8245)
+I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x69CB8245)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x69CB8245)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x69CB8260)
+I (E:\develope\Keil5\Core\ARM\ARMCC\include\stddef.h)(0x6025237E)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_exti.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x69CB8260)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69CB8260)
+I (E:\develope\Keil5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
+F (.\Application\App_MotorFeedbackRx.h)(0x6ADF6FC1)()
+F (.\Interface\Int_can.c)(0x6ADF70CC)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\int_can.o --omf_browse .\f103_node\int_can.crf --depend .\f103_node\int_can.d)
 I (Interface\Int_can.h)(0x6ACE5F52)
 I (../Core/Inc/main.h)(0x6ACCD403)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x69CB8260)
@@ -681,6 +716,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x69CB8260)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x69CB8260)
 I (../Core/Inc/can.h)(0x6ACCD5B6)
+I (./Application/App_MotorFeedbackRx.h)(0x6ADF6FC1)
 I (E:\develope\Keil5\Core\ARM\ARMCC\include\string.h)(0x6025237E)
 F (.\Interface\Int_can.h)(0x6ACE5F52)()
 F (../Middlewares/Third_Party/FreeRTOS/Source/croutine.c)(0x69CB8262)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ./Interface -I ./Application -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3-I.\RTE\_F103_Node-IE:\develope\Keil5\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IE:\develope\Keil5\Pack\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o .\f103_node\croutine.o --omf_browse .\f103_node\croutine.crf --depend .\f103_node\croutine.d)

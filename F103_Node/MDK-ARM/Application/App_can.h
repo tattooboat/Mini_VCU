@@ -48,5 +48,20 @@ uint8_t APP_CAN_Decode(
     APP_CAN_Message_t *msg
 );
 
+#define APP_CAN_ID_MOTOR_FEEDBACK  0x302U
 
+typedef struct
+{
+    uint8_t online;
+    uint8_t state;
+    int16_t target;
+    uint8_t last_cmd;
+    uint8_t seq;
+    uint8_t fault_code;
+    uint32_t rx_count;
+} APP_CAN_MotorFeedback_t;
+
+void APP_CAN_GetMotorFeedback(
+    APP_CAN_MotorFeedback_t *feedback
+);
 #endif//__APP_CAN_H

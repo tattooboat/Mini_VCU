@@ -1,4 +1,5 @@
 #include "App_MotorCan.h"
+#include "App_MotorFeedback.h"
 #include "App_Fault.h"
 
 #define MOTOR_CAN_ID       0x301
@@ -24,10 +25,20 @@ void App_MotorCan_OnRx(
     }
 
     /* 检查数据指针和帧长 */
-    if (data == NULL || len != 8)
+    if (data == NULL || len != 8U)
     {
         g_can_invalid_count++;
         App_Fault_Set(FAULT_CAN_BAD_FRAME);
+
+        /* 帧长不正确时，不读取未知数据字段 */
+        (void)App_MotorFeedback_Send(
+            MOTOR_STATE_FAULT,
+            0,
+            0U,
+            0U,
+            MOTOR_FAULT_BAD_DATA
+        );
+
         return;
     }
 
@@ -36,6 +47,14 @@ void App_MotorCan_OnRx(
     {
         g_can_invalid_count++;
         App_Fault_Set(FAULT_CAN_BAD_FRAME);
+
+        /* 反馈：数据帧格式错误 */
+        App_MotorFeedback_Send(
+            MOTOR_STATE_FAULT,
+            0,
+            data[1],
+            data[4],
+            MOTOR_FAULT_BAD_DATA);
         return;
     }
 
@@ -45,6 +64,14 @@ void App_MotorCan_OnRx(
     {
         g_can_invalid_count++;
         App_Fault_Set(FAULT_CAN_BAD_COMMAND);
+
+        /* 反馈：非法命令 */
+        App_MotorFeedback_Send(
+            MOTOR_STATE_FAULT,
+            0,
+            data[1],
+            data[4],
+            MOTOR_FAULT_BAD_COMMAND);
         return;
     }
 
@@ -59,6 +86,14 @@ void App_MotorCan_OnRx(
         App_Fault_Clear(FAULT_CAN_BAD_COMMAND);
         App_Fault_Clear(FAULT_CAN_BAD_SPEED);
 
+        /* 反馈：STOP 命令已被控制逻辑接受 */
+        App_MotorFeedback_Send(
+            MOTOR_STATE_STOP_ACCEPTED,
+            0,
+            data[1],
+            data[4],
+            MOTOR_FAULT_NONE);
+
         return;
     }
 
@@ -71,6 +106,14 @@ void App_MotorCan_OnRx(
     {
         g_can_invalid_count++;
         App_Fault_Set(FAULT_CAN_BAD_SPEED);
+
+        /* 反馈：目标速度超限，视为数据错误 */
+        App_MotorFeedback_Send(
+            MOTOR_STATE_FAULT,
+            0,
+            data[1],
+            data[4],
+            MOTOR_FAULT_BAD_DATA);
         return;
     }
 
@@ -83,6 +126,14 @@ void App_MotorCan_OnRx(
     App_Fault_Clear(FAULT_CAN_BAD_FRAME);
     App_Fault_Clear(FAULT_CAN_BAD_COMMAND);
     App_Fault_Clear(FAULT_CAN_BAD_SPEED);
+
+    /* 反馈：SET 命令已被控制逻辑接受 */
+    App_MotorFeedback_Send(
+        MOTOR_STATE_SET_ACCEPTED,
+        target_speed,
+        data[1],
+        data[4],
+        MOTOR_FAULT_NONE);
 }
 
 /* 读取当前目标速度 */

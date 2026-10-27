@@ -37,3 +37,4 @@
 .\f407_main\lcd_ili9341.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 .\f407_main\lcd_ili9341.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 .\f407_main\lcd_ili9341.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+.\f407_main\lcd_ili9341.o: USER\lcd_font.h

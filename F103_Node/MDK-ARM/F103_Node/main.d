@@ -42,3 +42,4 @@
 .\f103_node\main.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\string.h
 .\f103_node\main.o: ./Interface/Int_can.h
 .\f103_node\main.o: ./Application/App_can.h
+.\f103_node\main.o: ./Application/App_MotorFeedbackRx.h

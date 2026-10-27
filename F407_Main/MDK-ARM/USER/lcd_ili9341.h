@@ -2,6 +2,7 @@
 #define __LCD_ILI9341_H
 
 #include "stm32f4xx_hal.h"
+#include "lcd_font.h"
 
 #define LCD_WIDTH   320
 #define LCD_HEIGHT  240
@@ -14,5 +15,32 @@
 
 void LCD_Init(void);
 void LCD_FillColor(uint16_t color);
+
+void LCD_DrawPoint(uint16_t x, uint16_t y, uint16_t color);
+
+void LCD_FillRect(uint16_t x, uint16_t y,
+                  uint16_t width, uint16_t height,
+                  uint16_t color);
+
+void LCD_DrawRect(uint16_t x, uint16_t y,
+                  uint16_t width, uint16_t height,
+                  uint16_t color);
+/* ASCII 字符显示 */
+void LCD_DrawChar(uint16_t x, uint16_t y,
+                  char ch,
+                  uint16_t color,
+                  uint16_t bg_color);
+
+void LCD_ShowString(uint16_t x, uint16_t y,
+                    const char *str,
+                    uint16_t color,
+                    uint16_t bg_color);
+
+
+void LCD_ShowStringScale(uint16_t x, uint16_t y,
+                         const char *str,
+                         uint16_t color,
+                         uint16_t bg_color,
+                         uint8_t scale);
 
 #endif
