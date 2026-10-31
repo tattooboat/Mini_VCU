@@ -125,14 +125,81 @@ void LCD_Init(void)
 
     LCD_WriteRegister(0x3A, pixfmt, 1); // 16-bit RGB565
 
-    /* MADCTL: 初始方向，后续可根据实际面板调整 */
+    /* 电源与显示框设置（ILI9341 通用初始化序列） */
+    {
+        const uint8_t d[] = {0x00, 0xC1, 0x30};
+        LCD_WriteRegister(0xCF, d, 3); // Power Control B
+
+        const uint8_t e[] = {0x64, 0x03, 0x12, 0x81};
+        LCD_WriteRegister(0xED, e, 4); // Power ON Sequence
+
+        const uint8_t f[] = {0x85, 0x00, 0x78};
+        LCD_WriteRegister(0xE8, f, 3); // Driver Timing Control A
+
+        const uint8_t g[] = {0x39, 0x2C, 0x00, 0x34, 0x02};
+        LCD_WriteRegister(0xCB, g, 5); // Power Control A
+
+        const uint8_t h[] = {0x20};
+        LCD_WriteRegister(0xF7, h, 1); // Pump Ratio Control
+
+        const uint8_t i[] = {0x00, 0x00};
+        LCD_WriteRegister(0xEA, i, 2); // Driver Timing Control B
+
+        const uint8_t j[] = {0x23};
+        LCD_WriteRegister(0xC0, j, 1); // Power Control 1 (VRH)
+
+        const uint8_t k[] = {0x10};
+        LCD_WriteRegister(0xC1, k, 1); // Power Control 2 (SAP)
+
+        const uint8_t l[] = {0x3E, 0x28};
+        LCD_WriteRegister(0xC5, l, 2); // VCM Control
+
+        const uint8_t m[] = {0x86};
+        LCD_WriteRegister(0xC7, m, 1); // VCM Control 2
+    }
+
+    /* 显示功能控制：关闭部分显示、固定扫描方向（修复只能显示部分区域的经典问题） */
+    {
+        const uint8_t d[] = {0x08, 0x82, 0x27};
+        LCD_WriteRegister(0xB6, d, 3);
+
+        const uint8_t e[] = {0x00, 0x18};
+        LCD_WriteRegister(0xB1, e, 2); // Frame Rate
+
+        const uint8_t f[] = {0x00};
+        LCD_WriteRegister(0xF2, f, 1); // 3-Gamma Control Disable
+
+        const uint8_t g[] = {0x01};
+        LCD_WriteRegister(0x26, g, 1); // Gamma Set
+    }
+
+    /* MADCTL: 0x28（MV+BGR）。之前确认方向正确（红绿蓝黄位置对），先固定下来做运行诊断 */
     {
         const uint8_t madctl[] = {0x28};
         LCD_WriteRegister(0x36, madctl, 1);
     }
 
+    /* Gamma 曲线（通用默认值，兼容多数面板） */
+    {
+        const uint8_t p0[] =
+        {
+            0x0F, 0x31, 0x2B, 0x0C, 0x0E, 0x08,
+            0x4E, 0xF1, 0x37, 0x07, 0x10, 0x03,
+            0x0E, 0x09, 0x00
+        };
+        LCD_WriteRegister(0xE0, p0, 15); // Positive Gamma
+
+        const uint8_t p1[] =
+        {
+            0x00, 0x0E, 0x14, 0x03, 0x11, 0x07,
+            0x31, 0xC1, 0x48, 0x08, 0x0F, 0x0C,
+            0x31, 0x36, 0x0F
+        };
+        LCD_WriteRegister(0xE1, p1, 15); // Negative Gamma
+    }
+
     LCD_WriteCommand(0x29);  // Display ON
-    HAL_Delay(20);
+    HAL_Delay(120);
 }
 
 void LCD_FillColor(uint16_t color)
@@ -245,6 +312,58 @@ void LCD_FillRect(uint16_t x, uint16_t y,
     HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
 }
 
+
+/**
+ * @brief  将 RGB565 像素数组写入 ILI9341
+ * @note   pixels 按行排列，每个像素占 2 字节
+ */
+void LCD_DrawRGB565(uint16_t x, uint16_t y,
+                    uint16_t width, uint16_t height,
+                    const uint16_t *pixels)
+{
+    uint32_t total;
+    uint32_t i;
+    uint16_t color;
+
+    if (pixels == NULL || width == 0 || height == 0)
+    {
+        return;
+    }
+
+    /* 确保整个区域都在屏幕范围内 */
+    if (x >= LCD_WIDTH || y >= LCD_HEIGHT)
+    {
+        return;
+    }
+
+    if ((uint32_t)x + width > LCD_WIDTH ||
+        (uint32_t)y + height > LCD_HEIGHT)
+    {
+        return;
+    }
+
+    total = (uint32_t)width * height;
+
+    /* 设置要更新的矩形区域 */
+    LCD_SetWindow(x, y,
+                  (uint16_t)(x + width - 1),
+                  (uint16_t)(y + height - 1));
+
+    /* 连续发送像素数据 */
+    HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);
+
+    for (i = 0; i < total; i++)
+    {
+        color = pixels[i];
+
+        /* ILI9341 当前使用 RGB565，高字节先发 */
+        LCD_WriteByte((uint8_t)(color >> 8));
+        LCD_WriteByte((uint8_t)(color & 0xFF));
+    }
+
+    HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+}
 
 /**
  * @brief  绘制矩形边框
@@ -448,4 +567,3 @@ void LCD_ShowStringScale(uint16_t x, uint16_t y,
         str++;
     }
 }
-

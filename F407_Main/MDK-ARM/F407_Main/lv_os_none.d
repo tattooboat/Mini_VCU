@@ -1,0 +1,17 @@
+.\f407_main\lv_os_none.o: LVGL\src\osal\lv_os_none.c
+.\f407_main\lv_os_none.o: LVGL\src\osal\lv_os.h
+.\f407_main\lv_os_none.o: LVGL\src\osal\../lv_conf_internal.h
+.\f407_main\lv_os_none.o: LVGL\src\osal\../lv_conf_kconfig.h
+.\f407_main\lv_os_none.o: .\LVGL\lv_conf.h
+.\f407_main\lv_os_none.o: LVGL\src\osal\../misc/lv_types.h
+.\f407_main\lv_os_none.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdint.h
+.\f407_main\lv_os_none.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stddef.h
+.\f407_main\lv_os_none.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdbool.h
+.\f407_main\lv_os_none.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\inttypes.h
+.\f407_main\lv_os_none.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\limits.h
+.\f407_main\lv_os_none.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdarg.h
+.\f407_main\lv_os_none.o: LVGL\src\osal\lv_os_none.h
+.\f407_main\lv_os_none.o: LVGL\src\osal\../misc/lv_assert.h
+.\f407_main\lv_os_none.o: LVGL\src\osal\../misc/lv_log.h
+.\f407_main\lv_os_none.o: LVGL\src\osal\../misc/../stdlib/lv_mem.h
+.\f407_main\lv_os_none.o: LVGL\src\osal\../misc/../stdlib/lv_string.h

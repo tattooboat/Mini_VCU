@@ -37,6 +37,7 @@
 #include "Int_motor.h"
 #include "Int_Encoder.h"
 #include "App_MotorCan.h"
+#include "App_MotorControl.h"
 #include "App_MotorFeedback.h"
 #include <App_Fault.h>
 #include "App_lcd_ui.h"
@@ -77,6 +78,11 @@ volatile uint8_t g_touch_pressed = 0;
 
 volatile uint16_t g_touch_screen_x = 0;
 volatile uint16_t g_touch_screen_y = 0;
+
+/* 电机真实运行数据，供 LCD_Test_Task 显示 */
+volatile float g_ui_target_rpm = 0.0f;
+volatile float g_ui_actual_rpm = 0.0f;
+volatile int16_t g_ui_pwm = 0;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -156,10 +162,12 @@ void MX_FREERTOS_Init(void) {
 
   const osThreadAttr_t lcdTask_attributes = {
     .name = "lcdTask",
-    .stack_size = 512 * 4,
+    .stack_size = 2048 * 4,   /* 8KB，容纳 LVGL 渲染调用栈（原 2KB 会爆栈） */
     .priority = (osPriority_t)osPriorityLow,
     };
     
+    // [诊断] 暂不创建 LCD_Test_Task（它依赖 LVGL，LVGL 当前被注释）
+    // osThreadNew(LCD_Test_Task, NULL, &lcdTask_attributes);
     osThreadNew(LCD_Test_Task, NULL, &lcdTask_attributes);
     osThreadNew(App_MotorCan_ControlTask, NULL, &motorCanTask_attributes);
     osThreadNew(LED_Task, NULL, &ledTask_attributes);
@@ -275,15 +283,8 @@ void Debug_Task(void *argument)
                 );
             }
 
-            if (len > 0 && len < (int)sizeof(msg))
-            {
-                HAL_UART_Transmit(
-                    &huart1,
-                    (uint8_t *)msg,
-                    (uint16_t)len,
-                    1000
-                );
-            }
+            /* 串口输出已移至屏幕显示 */
+            (void)len;
         }
     }
 }
@@ -426,8 +427,41 @@ void App_MotorCan_ControlTask(void *argument)
 
         last_rx_tick = App_MotorCan_GetLastRxTick();
 
-        /* CAN ?????? */
-        if (last_rx_tick == 0U ||
+        /* 急停/异常停机锁存优先：E-STOP 后忽略一切目标并停机，直到显式复位 */
+        if (App_MotorControl_IsEMLatched())
+        {
+            can_timeout_reported = 0U;
+
+            can_speed = 0;
+            target_rpm = 0.0f;
+
+            App_Fault_Clear(FAULT_CAN_TIMEOUT);
+        }
+        /* 强制停机锁存优先：STOP 后忽略一切外部目标，直到再次 START */
+        else if (App_MotorControl_IsStopLatched())
+        {
+            can_timeout_reported = 0U;
+
+            can_speed = 0;
+            target_rpm = 0.0f;
+
+            App_Fault_Clear(FAULT_CAN_TIMEOUT);
+        }
+        /* 本地(LCD)控制优先：控制页生效时，以本地目标速度为源 */
+        else if (App_MotorControl_IsActive())
+        {
+            can_timeout_reported = 0U;
+
+            can_speed = App_MotorControl_GetTargetSpeed();
+
+            App_Fault_Clear(FAULT_CAN_TIMEOUT);
+
+            /* CAN ???????? RPM */
+            target_rpm =
+                ((float)can_speed / 1000.0f) * MOTOR_MAX_RPM;
+        }
+        /* 本地控制未生效：按 CAN ?????? */
+        else if (last_rx_tick == 0U ||
             (uint32_t)(now - last_rx_tick) > 500U)
         {
             can_speed = 0;
@@ -520,36 +554,27 @@ void App_MotorCan_ControlTask(void *argument)
             Int_Motor_SetSpeed(current_pwm);
         }
 
-        /* ?? 10 ?????????? 500 ms */
-        if ((print_cnt++ % 10U) == 0U)
-        {
-            int n = snprintf(
-                dbg_buf,
-                sizeof(dbg_buf),
-                "TgtRPM=%.1f ActRPM=%.1f "
-                "Err=%.1f I=%.1f PWM=%d\r\n",
-                (double)target_rpm,
-                (double)actual_rpm,
-                (double)error,
-                (double)integral,
-                (int)current_pwm
-            );
+        /* PWM/转速数据已在屏幕上显示，不再重复串口打印 */
+        (void)print_cnt;
 
-            if (n > 0 && n < (int)sizeof(dbg_buf))
-            {
-                HAL_UART_Transmit(
-                    &huart1,
-                    (uint8_t *)dbg_buf,
-                    (uint16_t)n,
-                    50
-                );
-            }
-        }
+        /* 更新供 LCD_Test_Task 读取的真实运行数据 */
+        g_ui_target_rpm = target_rpm;
+        g_ui_actual_rpm = actual_rpm;
+        g_ui_pwm = current_pwm;
 
         osDelay(50);
     }
 }
  
+
+
+#include "lvgl.h"
+#include "cmsis_os.h"
+#include "App_lcd_ui.h"
+#include "Int_can.h"
+#include "Int_XPT2046.h"
+#include "App_Fault.h"
+#include <stdint.h>
 
 void LCD_Test_Task(void *argument)
 {
@@ -559,6 +584,9 @@ void LCD_Test_Task(void *argument)
     uint32_t last_rx_tick = 0U;
     uint32_t now;
 
+    uint32_t last_ui_tick = 0U;
+    uint32_t last_touch_tick = 0U;
+
     uint8_t dlc = 0U;
     uint8_t data[8] = {0};
     uint8_t can_online = 0U;
@@ -566,89 +594,151 @@ void LCD_Test_Task(void *argument)
 
     (void)argument;
 
-    /* ??????? */
+    /*
+     * 前提：
+     * lv_init() 和 lv_port_disp_init()
+     * 已经在其他初始化代码中执行。
+     *
+     * 本任务负责创建页面、更新控件、
+     * 调用 lv_timer_handler()。
+     */
+
+    /* 初始化 LVGL 触摸输入设备 */
+    App_Touch_LVGL_Init();
+
+    /* 创建仪表盘页面 */
     LCD_UI_ShowHomePage();
+
+    now = HAL_GetTick();
+    last_ui_tick = now;
+    last_touch_tick = now;
 
     for (;;)
     {
-        /*
-         * 1. ???????
-         * ?????????????????? CAN ??
-         */
-        rx_count = g_can_rx_count;
-
         now = HAL_GetTick();
 
-        if (rx_count != last_rx_count)
-        {
-            last_rx_count = rx_count;
-            last_rx_tick = now;
-        }
-
         /*
-         * 2. ??????? ID?DLC ????
+         * 1. 定期更新 CAN、电机和故障信息
+         *    每 200 ms 更新一次界面数据
          */
-        can_id = g_can_last_id;
-        dlc = g_can_last_dlc;
-
-        if (dlc > 8U)
+        if ((uint32_t)(now - last_ui_tick) >= 200U)
         {
-            dlc = 8U;
-        }
+            last_ui_tick = now;
 
-        for (i = 0U; i < 8U; i++)
-        {
-            data[i] = g_can_last_data[i];
-        }
+            /*
+             * 读取最新 CAN 接收状态
+             */
+            rx_count = g_can_rx_count;
 
-        /*
-         * 3. 500 ms ???? CAN ????????
-         * ?????????????
-         */
-        now = HAL_GetTick();
+            if (rx_count != last_rx_count)
+            {
+                last_rx_count = rx_count;
+                last_rx_tick = now;
+            }
 
-        if ((rx_count > 0U) &&
-            ((uint32_t)(now - last_rx_tick) <= 500U))
-        {
-            can_online = 1U;
-        }
-        else
-        {
-            can_online = 0U;
-        }
+            /*
+             * 读取最新 CAN 帧
+             */
+            can_id = g_can_last_id;
+            dlc = g_can_last_dlc;
 
-        /*
-         * 4. ?? LCD ? CAN ?????
-         */
-        LCD_UI_UpdateCAN(can_id,
-                         dlc,
-                         data,
-                         rx_count,
-                         can_online);
-        LCD_UI_UpdateMotor(can_id, dlc, data);
-        LCD_UI_UpdateFault(g_fault_flags);
-        osDelay(200);
+            if (dlc > 8U)
+            {
+                dlc = 8U;
+            }
 
-        g_touch_pressed = Int_XPT2046_IsPressed();
+            for (i = 0U; i < 8U; i++)
+            {
+                data[i] = g_can_last_data[i];
+            }
 
-        if (Int_XPT2046_IsPressed())
-        {
-            Int_XPT2046_ReadRaw(
-                (uint16_t *)&g_touch_raw_x,
-                (uint16_t *)&g_touch_raw_y
+            /*
+             * 判断 CAN 是否在线
+             * 500 ms 内收到过数据视为在线
+             */
+            if ((rx_count > 0U) &&
+                ((uint32_t)(now - last_rx_tick) <= 500U))
+            {
+                can_online = 1U;
+            }
+            else
+            {
+                can_online = 0U;
+            }
+
+            /*
+             * 更新 LVGL 控件。
+             * 这些函数现在必须使用 LVGL API，
+             * 不要再调用 LCD_FillRect、
+             * LCD_ShowString 等旧绘图函数。
+             */
+            LCD_UI_UpdateCAN(
+                can_id,
+                dlc,
+                data,
+                rx_count,
+                can_online
             );
 
-            App_Touch_Map(
-                g_touch_raw_x,
-                g_touch_raw_y,
-                (uint16_t *)&g_touch_screen_x,
-                (uint16_t *)&g_touch_screen_y
+            LCD_UI_UpdateMotor(
+                can_id,
+                dlc,
+                data
             );
+
+            LCD_UI_UpdateFault(g_fault_flags);
+
+            /* 显示电机真实转速、目标转速与 PWM 占空比 */
+            LCD_UI_UpdateSpeed(
+                g_ui_target_rpm,
+                g_ui_actual_rpm,
+                g_ui_pwm);
+
+            /* 控制页：刷新真实电机运行状态 */
+            LCD_UI_UpdateControlStatus(
+                g_ui_actual_rpm,
+                g_ui_pwm);
         }
 
-        osDelay(20);
+        /*
+         * 2. 每 20 ms 采样一次触摸屏
+         *
+         * 这里仅采集和映射坐标；
+         * 还没有把 XPT2046 注册为 LVGL 输入设备。
+         */
+        if ((uint32_t)(now - last_touch_tick) >= 20U)
+        {
+            last_touch_tick = now;
+
+            g_touch_pressed = Int_XPT2046_IsPressed();
+
+            if (g_touch_pressed)
+            {
+                Int_XPT2046_ReadRaw(
+                    (uint16_t *)&g_touch_raw_x,
+                    (uint16_t *)&g_touch_raw_y
+                );
+
+                App_Touch_Map(
+                    g_touch_raw_x,
+                    g_touch_raw_y,
+                    (uint16_t *)&g_touch_screen_x,
+                    (uint16_t *)&g_touch_screen_y
+                );
+            }
+        }
+
+        /*
+         * 3. 持续处理 LVGL 定时器和屏幕刷新
+         */
+        lv_timer_handler();
+
+        /*
+         * 4. 让出 CPU，避免任务持续占用处理器
+         */
+        osDelay(5);
     }
 }
 
-/* USER CODE END Application */
 
+/* USER CODE END Application */

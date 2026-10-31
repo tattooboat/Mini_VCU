@@ -10,6 +10,7 @@
 #define FAULT_CAN_BAD_FRAME    0x00000002U
 #define FAULT_CAN_BAD_COMMAND  0x00000004U
 #define FAULT_CAN_BAD_SPEED    0x00000008U
+#define FAULT_EMERGENCY_STOP   0x00000010U
 
 extern volatile uint32_t g_fault_flags;
 extern volatile uint32_t g_can_rx_count;

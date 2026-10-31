@@ -1,0 +1,17 @@
+.\f407_main\lv_lru.o: LVGL\src\misc\lv_lru.c
+.\f407_main\lv_lru.o: LVGL\src\misc\lv_lru.h
+.\f407_main\lv_lru.o: LVGL\src\misc\../lv_conf_internal.h
+.\f407_main\lv_lru.o: LVGL\src\misc\../lv_conf_kconfig.h
+.\f407_main\lv_lru.o: .\LVGL\lv_conf.h
+.\f407_main\lv_lru.o: LVGL\src\misc\lv_types.h
+.\f407_main\lv_lru.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdint.h
+.\f407_main\lv_lru.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stddef.h
+.\f407_main\lv_lru.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdbool.h
+.\f407_main\lv_lru.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\inttypes.h
+.\f407_main\lv_lru.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\limits.h
+.\f407_main\lv_lru.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdarg.h
+.\f407_main\lv_lru.o: LVGL\src\misc\lv_math.h
+.\f407_main\lv_lru.o: LVGL\src\misc\../stdlib/lv_mem.h
+.\f407_main\lv_lru.o: LVGL\src\misc\../stdlib/lv_string.h
+.\f407_main\lv_lru.o: LVGL\src\misc\lv_assert.h
+.\f407_main\lv_lru.o: LVGL\src\misc\lv_log.h

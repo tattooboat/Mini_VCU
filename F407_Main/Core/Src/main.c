@@ -35,6 +35,8 @@
 #include "Int_motor.h"
 #include "lcd_ili9341.h"
 #include "Int_XPT2046.h"
+#include "lvgl.h"
+#include "lv_port_disp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -130,7 +132,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
   Int_XPT2046_Init();
   LCD_Init();
-  
+  /* 初始化 LVGL 内核与显示驱动 */
+  lv_init();
+  lv_port_disp_init();
+
+  /* 启动 CAN，使能接收（此前诊断阶段临时注释，现已查明卡死与 CAN 无关） */
   if (INT_CAN_Start() != HAL_OK)
   {
       Error_Handler();

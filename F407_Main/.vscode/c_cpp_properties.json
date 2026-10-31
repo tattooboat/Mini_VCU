@@ -21,7 +21,9 @@
                 "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/include",
                 "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F",
                 "${workspaceFolder}/MDK-ARM/Application",
-                "${workspaceFolder}/MDK-ARM/USER"
+                "${workspaceFolder}/MDK-ARM/USER",
+                "${workspaceFolder}/MDK-ARM/LVGL",
+                "${workspaceFolder}/MDK-ARM/LVGL/examples/porting"
             ],
             "defines": [
                 "USE_HAL_DRIVER",

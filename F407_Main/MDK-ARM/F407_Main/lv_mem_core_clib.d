@@ -1,0 +1,13 @@
+.\f407_main\lv_mem_core_clib.o: LVGL\src\stdlib\clib\lv_mem_core_clib.c
+.\f407_main\lv_mem_core_clib.o: LVGL\src\stdlib\clib\../lv_mem.h
+.\f407_main\lv_mem_core_clib.o: LVGL\src\stdlib\clib\../../lv_conf_internal.h
+.\f407_main\lv_mem_core_clib.o: LVGL\src\stdlib\clib\../../lv_conf_kconfig.h
+.\f407_main\lv_mem_core_clib.o: .\LVGL\lv_conf.h
+.\f407_main\lv_mem_core_clib.o: LVGL\src\stdlib\clib\../lv_string.h
+.\f407_main\lv_mem_core_clib.o: LVGL\src\stdlib\clib\../../misc/lv_types.h
+.\f407_main\lv_mem_core_clib.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdint.h
+.\f407_main\lv_mem_core_clib.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stddef.h
+.\f407_main\lv_mem_core_clib.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdbool.h
+.\f407_main\lv_mem_core_clib.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\inttypes.h
+.\f407_main\lv_mem_core_clib.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\limits.h
+.\f407_main\lv_mem_core_clib.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdarg.h

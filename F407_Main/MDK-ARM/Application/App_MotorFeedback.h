@@ -16,6 +16,7 @@
 #define MOTOR_FAULT_CAN_TIMEOUT  0x01U
 #define MOTOR_FAULT_BAD_COMMAND  0x02U
 #define MOTOR_FAULT_BAD_DATA     0x03U
+#define MOTOR_FAULT_ESTOP        0x04U
 
 HAL_StatusTypeDef App_MotorFeedback_Send(
     uint8_t state,

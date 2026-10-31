@@ -1,0 +1,12 @@
+.\f407_main\lv_sprintf_builtin.o: LVGL\src\stdlib\builtin\lv_sprintf_builtin.c
+.\f407_main\lv_sprintf_builtin.o: LVGL\src\stdlib\builtin\../../lv_conf_internal.h
+.\f407_main\lv_sprintf_builtin.o: LVGL\src\stdlib\builtin\../../lv_conf_kconfig.h
+.\f407_main\lv_sprintf_builtin.o: .\LVGL\lv_conf.h
+.\f407_main\lv_sprintf_builtin.o: LVGL\src\stdlib\builtin\../lv_sprintf.h
+.\f407_main\lv_sprintf_builtin.o: LVGL\src\stdlib\builtin\../../misc/lv_types.h
+.\f407_main\lv_sprintf_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdint.h
+.\f407_main\lv_sprintf_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stddef.h
+.\f407_main\lv_sprintf_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdbool.h
+.\f407_main\lv_sprintf_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\inttypes.h
+.\f407_main\lv_sprintf_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\limits.h
+.\f407_main\lv_sprintf_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdarg.h

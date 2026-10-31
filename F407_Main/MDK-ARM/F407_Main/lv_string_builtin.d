@@ -1,0 +1,16 @@
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\lv_string_builtin.c
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\../../lv_conf_internal.h
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\../../lv_conf_kconfig.h
+.\f407_main\lv_string_builtin.o: .\LVGL\lv_conf.h
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\../../misc/lv_assert.h
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\../../misc/lv_log.h
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\../../misc/lv_types.h
+.\f407_main\lv_string_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdint.h
+.\f407_main\lv_string_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stddef.h
+.\f407_main\lv_string_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdbool.h
+.\f407_main\lv_string_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\inttypes.h
+.\f407_main\lv_string_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\limits.h
+.\f407_main\lv_string_builtin.o: E:\develope\Keil5\Core\ARM\ARMCC\Bin\..\include\stdarg.h
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\../../misc/../stdlib/lv_mem.h
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\../../misc/../stdlib/lv_string.h
+.\f407_main\lv_string_builtin.o: LVGL\src\stdlib\builtin\../../misc/lv_math.h

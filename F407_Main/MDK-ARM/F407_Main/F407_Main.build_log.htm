@@ -22,19 +22,35 @@ Dialog DLL:      TCM.DLL V1.56.1.0
  
 <h2>Project:</h2>
 e:\code\2026stm32\Vehicle_CAN\Mini_VCU\F407_Main\MDK-ARM\F407_Main.uvprojx
-Project File Date:  10/28/2026
+Project File Date:  10/29/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'E:\develope\Keil5\Core\ARM\ARMCC\Bin'
 Build target 'F407_Main'
-compiling freertos.c...
-./Interface/Int_XPT2046.h(17): warning:  #1-D: last line of file ends without a newline
+compiling App_lcd_ui.c...
+Application\App_Fault.h(22): warning:  #1-D: last line of file ends without a newline
   #endif
-../Core/Src/freertos.c: 1 warning, 0 errors
+Application\App_lcd_ui.h(30): warning:  #1-D: last line of file ends without a newline
+  #endif
+.\LVGL\lv_conf.h(1127): warning:  #1-D: last line of file ends without a newline
+  #endif /*End of "Content enable"*/
+Application\App_MotorControl.h(26): warning:  #1-D: last line of file ends without a newline
+  #endif
+Application\App_MotorFeedback.h(29): warning:  #1-D: last line of file ends without a newline
+  #endif
+Application\App_lcd_ui.c(300): warning:  #177-D: variable "line"  was declared but never referenced
+      char line[48];
+Application\App_lcd_ui.c(907): warning:  #1-D: last line of file ends without a newline
+  }
+Application\App_lcd_ui.c(46): warning:  #550-D: variable "label_mcu"  was set but never used
+  static lv_obj_t *label_mcu;
+Application\App_lcd_ui.c(170): warning:  #177-D: function "Touch_Test_Event"  was declared but never referenced
+  static void Touch_Test_Event(lv_event_t *e)
+Application\App_lcd_ui.c: 9 warnings, 0 errors
 linking...
-Program Size: Code=35176 RO-data=1024 RW-data=236 ZI-data=20196  
+Program Size: Code=265896 RO-data=31764 RW-data=508 ZI-data=118224  
 FromELF: creating hex file...
-".\F407_Main\F407_Main.axf" - 0 Error(s), 1 Warning(s).
+".\F407_Main\F407_Main.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -58,7 +74,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.6.0
       Include file:  CMSIS/Core/Include/tz_context.h
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:08
 </pre>
 </body>
 </html>

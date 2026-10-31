@@ -43,4 +43,14 @@ void LCD_ShowStringScale(uint16_t x, uint16_t y,
                          uint16_t bg_color,
                          uint8_t scale);
 
+                         /**
+ * @brief  连续绘制 RGB565 像素区域
+ * @param  x,y       左上角坐标
+ * @param  width     区域宽度
+ * @param  height    区域高度
+ * @param  pixels    RGB565 像素数组，按行排列
+ */
+void LCD_DrawRGB565(uint16_t x, uint16_t y,
+                    uint16_t width, uint16_t height,
+                    const uint16_t *pixels);
 #endif

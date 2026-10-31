@@ -10,4 +10,7 @@ void App_Touch_Map(
     uint16_t *screen_y
 );
 
+/* 注册 XPT2046 为 LVGL 触摸输入设备 */
+void App_Touch_LVGL_Init(void);
+
 #endif
