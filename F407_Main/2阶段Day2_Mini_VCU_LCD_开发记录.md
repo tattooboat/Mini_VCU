@@ -1,5 +1,7 @@
 # Mini VCU 屏幕开发记录 — Day 2
 
+> **整理说明（2026-10-31）**：本文保留 Day 2 当时的开发过程。后续加入的 XPT2046、LVGL 页面、本地电机控制、急停锁存和真实状态刷新，已统一整理到 [README.md](README.md) 与 [RESUME_INTERVIEW.md](RESUME_INTERVIEW.md)。最终接口、控制优先级和已知限制以 README 为准；Day 4 过程记录仍保留在本目录。
+
 ## 一、开发环境与目标
 - 主控：STM32F407VGT6
 - 屏幕：2.4 寸 ILI9341，320×240 横屏
